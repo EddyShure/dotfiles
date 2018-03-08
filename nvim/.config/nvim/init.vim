@@ -1,4 +1,4 @@
-call plug#begin('~/.nvim/plugged')
+call plug#begin('~/.cache/nvim')
 
 " Sensible defaults
 Plug 'tpope/vim-sensible'
@@ -8,25 +8,28 @@ Plug 'easymotion/vim-easymotion'
 Plug 'morhetz/gruvbox'
 
 Plug 'scrooloose/nerdtree'
-"Plug 'neomake/neomake'
 Plug 'junegunn/goyo.vim'
 
 Plug 'vimwiki/vimwiki'
+"Plug 'neomake/neomake'
 "Plug 'vim-pandoc/vim-pandoc'
 Plug 'ledger/vim-ledger'
 
-Plug '~/.fzf'
+" fzf
+Plug '~/dotfiles/bin/fzf'
 Plug 'junegunn/fzf.vim'
 
+" Airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
+" Syntax checking/completion
 Plug 'w0rp/ale'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'ervandew/supertab'
 Plug 'rhysd/vim-grammarous'
 
-" Small Utils
+" Small utils
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-surround'
@@ -35,14 +38,14 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-unimpaired'
-
-" Functions for many unix commands, e.g. :Mkdir 
 Plug 'tpope/vim-eunuch'
 Plug 'qpkorr/vim-bufkill'
 
+" Language support
 Plug 'sheerun/vim-polyglot'
 Plug 'lervag/vimtex'
 
+" Emmet
 Plug 'mattn/emmet-vim'
 
 " Elixir
