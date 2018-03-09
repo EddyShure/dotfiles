@@ -155,3 +155,10 @@ bar {
 	font pango:DejaVu Sans 12
         status_command SCRIPT_DIR=~/dotfiles/bin/i3blocks-contrib i3blocks 
 }
+
+# Backlight control
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 10"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 10"
+
+# Screenshot shortcut
+bindsym --release Print exec "scrot -s"

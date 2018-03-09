@@ -227,3 +227,5 @@ nnoremap <C-H> <C-W><C-H>
 
 "Autocommit vimwiki
 au BufWritePost ~/vimwiki/* Gwrite | Gcommit -m "Auto commit of %:t"
+
+let g:gutentags_cache_dir = "~/.cache/ctags"
