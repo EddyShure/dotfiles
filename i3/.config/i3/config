@@ -160,5 +160,16 @@ bar {
 bindsym XF86MonBrightnessUp exec "xbacklight -inc 10"
 bindsym XF86MonBrightnessDown exec "xbacklight -dec 10"
 
+# Volume control
+bindsym XF86AudioMute exec "pactl set-sink-mute 0 toggle"
+bindsym XF86AudioRaiseVolume exec "pactl set-sink-volume 0 +10%"
+bindsym XF86AudioLowerVolume exec "pactl set-sink-volume 0 -10%"
+
 # Screenshot shortcut
 bindsym --release Print exec "scrot -s"
+
+# External monitor toggle
+bindsym XF86Display exec "~/dotfiles/bin/toggle"
+
+# MQTT pub
+bindsym XF86Tools exec "mosquitto_pub -h OpenWrt -t cmnd/sonoff1/power -m toggle"
