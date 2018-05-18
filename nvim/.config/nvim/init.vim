@@ -74,6 +74,8 @@ let g:gruvbox_italic = 1
 
 call plug#end()
 
+autocmd TermOpen * set bufhidden=hide
+
 " Set colorscheme
 set background=dark
 " colorscheme solarized
