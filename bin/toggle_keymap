@@ -1,0 +1,3 @@
+#!/bin/bash
+
+(setxkbmap -query | grep -q "variant:\s\+neo") && setxkbmap de || setxkbmap de neo

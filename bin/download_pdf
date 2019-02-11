@@ -1,0 +1,4 @@
+#!/bin/sh
+
+curl -L -e $1 $2 -o /tmp/temp_pdf_download.pdf
+mupdf /tmp/temp_pdf_download.pdf

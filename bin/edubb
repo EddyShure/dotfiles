@@ -1,0 +1,44 @@
+#!/bin/env ruby
+
+require 'mechanize'
+
+agent = Mechanize.new
+agent.ssl_version = :TLSv1
+
+cred_file = File.readlines("/home/mono/.uvt_creds")
+stuff= ""
+
+agent.get('https://edubb.uvt.nl') do |page|
+  edubb = page.form_with(action: 'login') do |form|
+    form['username'] = cred_file[0].strip
+    form['password'] = cred_file[1].strip
+  end.submit
+
+  all_cookies = agent.cookies
+  the_cookie = all_cookies.select{|c| c.name == "JSESSIONID" && c.path == "/webapps/portal" }.first
+
+stuff = """callCount=1
+page=/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_14_1
+httpSessionId=#{the_cookie.value}
+scriptSessionId=8A22AEE4C7B3F9CA3A094735175A6B14854
+c0-scriptName=ToolActivityService
+c0-methodName=getActivityForAllTools
+c0-id=0
+batchId=0
+"""
+end
+
+headers = {
+  "Content-Type" => "text/plain",
+  "Accept" => "*/*",
+  "Referer" => "https://edubb.uvt.nl/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_14_1",
+  "Origin" => "https://edubb.uvt.nl",
+  "User-Agent" => "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/604.1 (KHTML, like Gecko) Version/11.0 Safari/604.1",
+  "Accept-Encoding" => "gzip, deflate",
+  "Accept-Language" => "en-US",
+  "Connection" => "Keep-Alive",
+  "undefined" => "true"
+}
+
+res = agent.post("https://edubb.uvt.nl/webapps/portal/dwr_open/call/plaincall/ToolActivityService.getActivityForAllTools.dwr", stuff, headers)
+puts (/AlertsTool':(\d+),/.match(res.body)[1])
