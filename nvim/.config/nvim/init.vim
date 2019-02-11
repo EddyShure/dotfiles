@@ -57,6 +57,9 @@ Plug 'ludovicchabant/vim-gutentags'
 
 Plug 'kien/rainbow_parentheses.vim'
 
+" R
+Plug 'jalvesaq/Nvim-R'
+
 " base16-vim
 " syntastic
 " vim-classpath
@@ -70,6 +73,9 @@ Plug 'kien/rainbow_parentheses.vim'
 
 Plug 'morhetz/gruvbox'
 let g:gruvbox_italic = 1
+
+let g:vimtex_enabled = 1
+let g:vimtex_mappings_enabled = 1
 
 
 call plug#end()
@@ -231,3 +237,11 @@ nnoremap <C-H> <C-W><C-H>
 au BufWritePost ~/vimwiki/* Gwrite | Gcommit -m "Auto commit of %:t"
 
 let g:gutentags_cache_dir = "~/.cache/ctags"
+
+:set number relativenumber
+
+:augroup numbertoggle
+:  autocmd!
+:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+:augroup END
