@@ -1,0 +1,27 @@
+set home-page=https://searx.me/
+set user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36
+set download-path=/tmp/
+set editor-command=st -e sh -c "nvim %s"
+set x-hint-command=:sh! ~/dotfiles/bin/download_pdf <C-R>% <C-R>;
+
+shortcut-add d=http://dict.cc/?s=$0
+shortcut-add s=https://searx.me/?preferences=eJx1VU2z2zYM_DXVReNO0xx60iHT9CMznUmm76VXDkRCEiqKUAjKfsqvL-gnWXTiHiyPaGB3sSDgiLL4JIaDCXgxCdrmd_CClWMyEYX9GWMjlk7D0v6YLpWH0C_QY4Ph9Pmp8mzB55fKkUDr0ZnZLz0Faf6h6eRpRDNwGnGVH37-9eOMIaMqpfEUxhtvG_kiGDN_jvsQOgqU0IiN7P2e-c5aFDHvP35QkEvUgIom1WLmyC_rJhyWxJan2WPCphLoUBCiHZqfqjTghA2LhVhhuFf7hL4zystxgkQcsoznCHZUVZ___ksJJ1Yr9PTP5-dPT7sAfX-6wudKLCTsOa5G0KNNhyUYlAOlGcmOoBWYjjxmhi4i1sJdukDE2lHUtAxgKOmvZ4ZkjLAl8PWEjkAPKYAxZ3LIGSCic_R90BJk9iCDAmWDcmTP3Hus9XitYZ4LEe8Xp-aaHgNGyGZba0_pXLD01GshIKmM2qm1f9dSXGRyB2pYAQp6t9gxf3ouMW6GHFSFzGkRssZcv_SnFYLDl0cSjpMecUw0oWwWvqrYERz1bSrIwPbCy_-x85mwlPbmpahHEN2Mejlu4BP_q-SlmB3-lsR6iyPOXJh_4HzX08O7V9l7CuqwZKcPog4i860TA7QR8mPzIF9POmNN8kjcLr-l1Gp_MG1ZKwx816su6sQS2EJY4nHlxDLwCOGA2uQcqZjWiYNOPJanr725ld1FmMBTG3FTMK2TDl1c6xQhiNfhco8K2G3JqaDROULua_1ygXB3TY7bWL8W87Cz91d5f_um6Jv-rUu7Cd-EHf3-GmAqtciFRKzuv1KDhRBrSXGxaYlZnq5gDBavCLmhlh3W-bGZVaAc0G_evv3l5W6Ok4d2z0gQ05zXZ2mM62uH1-2bl-DDWb1WeFug-26rJkwDu-aP356rbRHq-DRbfnXduidJq_5beO4pSz-fHMTxP0efc9U=&q=$0
+shortcut-default s
+
+nnoremap n h
+nnoremap r j
+nnoremap t k
+nnoremap d l
+
+nnoremap \ f
+
+set hint-keys=uiae
+
+set completion-css=color:#ebdbb2;background-color:#282828;font:12pt Fira Mono for Powerline;
+set completion-hover-css=color:#ebdbb2;background-color:#282828;font:12pt Fira Mono for Powerline;
+set completion-selected-css=color:#ebdbb2;background-color:#a89984;font:12pt Fira Mono for Powerline;
+set input-css=color:#ebdbb2;background-color:#282828;font:12pt Fira Mono for Powerline;
+set input-error-css=color:#fb4934;background-color:#282828;font:12pt Fira Mono for Powerline;
+set status-css=color:#fabd2f;background-color:#282828;font:12pt Fira Mono for Powerline;
+set status-ssl-css=color:#b8bb26;background-color:#282828;font:12pt Fira Mono for Powerline;
+set status-ssl-invalid-css=color:#fb4934;background-color:#282828;font:12pt Fira Mono for Powerline;
