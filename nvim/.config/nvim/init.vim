@@ -156,11 +156,13 @@ function! s:check_back_space() abort "{{{
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
 
-function Hemingway()
+function! Hemingway()
   Goyo
   set linebreak
   set wrap
+  set norelativenumber
 endfunction
+:command Hemingway :call Hemingway()
 
 " let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 
