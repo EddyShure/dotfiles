@@ -115,7 +115,7 @@ endfunction
 autocmd FileType html,erb,eruby,css,sass,eelixir,javascript.jsx imap <buffer><expr><tab> <sid>emmet_html_tab()
 
 " Rainbow parentheses
-" au VimEnter * RainbowParenthesesToggle
+au VimEnter * RainbowParenthesesToggle
 
 
 " show airline all the time
@@ -240,10 +240,10 @@ au BufWritePost ~/vimwiki/* Gwrite | Gcommit -m "Auto commit of %:t"
 
 let g:gutentags_cache_dir = "~/.cache/ctags"
 
-:set number relativenumber
+" :set number relativenumber
 
-:augroup numbertoggle
-:  autocmd!
-:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
-:augroup END
+" :augroup numbertoggle
+" :  autocmd!
+" :  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+" :  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+" :augroup END
