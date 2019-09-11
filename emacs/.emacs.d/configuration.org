@@ -1,0 +1,552 @@
+* General settings
+** Ensure that packages are there
+
+ #+BEGIN_SRC emacs-lisp
+ (require 'use-package-ensure)
+ (setq use-package-always-ensure t)
+ #+END_SRC
+
+** Enable ido flex mode
+
+#+BEGIN_SRC emacs-lisp
+(setq ido-enable-flex-matching t)
+#+END_SRC
+
+* HELM
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm)
+(require 'helm-config)
+(global-set-key (kbd "M-x") 'helm-M-x)
+#+END_SRC
+
+Enable fuzzy finding
+
+#+BEGIN_SRC emacs-lisp
+(setq helm-mode-fuzzy-match t)
+(setq helm-completion-in-region-fuzzy-match t)
+#+END_SRC
+
+* projectile
+
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+#+END_SRC
+
+* =evil mode=
+  
+Enable evil mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil :config (evil-mode 1))
+#+END_SRC
+
+Enable ~evil-surround~ and ~evil-commentary~
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil-commentary :config (evil-commentary-mode 1))
+#+END_SRC
+
+* Theme
+** Fonts
+
+Set font to Fira Code
+  
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'default-frame-alist '(font . "Fira Code 12"))
+#+END_SRC
+
+Prettify the font
+
+#+BEGIN_SRC emacs-lisp
+(defun fira-code-mode--make-alist (list)
+  "Generate prettify-symbols alist from LIST."
+  (let ((idx -1))
+    (mapcan
+     (lambda (s)
+       (setq idx (1+ idx))
+       (unless (null s)
+        (let* ((code (+ #Xe100 idx))
+               (width (string-width s))
+               (prefix ())
+               (suffix '(?\s (Br . Br)))
+               (n 1))
+          (while (< n width)
+            (setq prefix (append prefix '(?\s (Br . Bl))))
+            (setq n (1+ n)))
+          (list (cons s (append prefix suffix (list (decode-char 'ucs code))))))))
+     list)))
+
+(defconst fira-code-mode--ligatures
+  '("www" "**"
+    nil                                 ; "***"
+    "**/" "*>" "*/" "\\\\" "\\\\\\"
+    "{-" "[]" "::" ":::" ":=" "!!" "!=" "!==" "-}"
+    "--" "---" "-->" "->" "->>" "-<" "-<<" "-~"
+    "#{" "#[" "##" "###" "####" "#(" "#?" "#_" "#_("
+    ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*"
+    "/**" "/=" "/==" "/>" "//" "///" "&&" "||" "||="
+    "|=" "|>" "^=" "$>" "++" "+++" "+>" "=:=" "=="
+    "===" "==>" "=>" "=>>" "<=" "=<<" "=/=" ">-" ">="
+    ">=>" ">>" ">>-" ">>=" ">>>" "<*" "<*>" "<|" "<|>"
+    "<$" "<$>" "<!--" "<-" "<--" "<->" "<+" "<+>" "<="
+    "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~"
+    "<~~" "</" "</>" "~@" "~-" "~=" "~>" "~~" "~~>" "%%"
+    nil                                 ; "x"
+    ":" "+" "+" "*"))
+
+(defvar fira-code-mode--old-prettify-alist)
+
+(defun fira-code-mode--enable ()
+  "Enable Fira Code ligatures in current buffer."
+  (setq-local fira-code-mode--old-prettify-alist prettify-symbols-alist)
+  (setq-local prettify-symbols-alist (append (fira-code-mode--make-alist fira-code-mode--ligatures) fira-code-mode--old-prettify-alist))
+  (prettify-symbols-mode t))
+
+(defun fira-code-mode--disable ()
+  "Disable Fira Code ligatures in current buffer."
+  (setq-local prettify-symbols-alist fira-code-mode--old-prettify-alist)
+  (prettify-symbols-mode -1))
+
+(define-minor-mode fira-code-mode
+  "Fira Code ligatures minor mode"
+  :lighter " Fira Code"
+  (setq-local prettify-symbols-unprettify-at-point 'right-edge)
+  (if fira-code-mode
+      (fira-code-mode--enable)
+    (fira-code-mode--disable)))
+
+(defun fira-code-mode--setup ()
+  "Setup Fira Code Symbols"
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol"))
+
+(provide 'fira-code-mode)
+
+#+END_SRC
+
+** Theme
+
+Use gruvbox as theme
+
+#+BEGIN_SRC emacs-lisp
+(use-package gruvbox-theme :config (load-theme 'gruvbox-dark-medium t))
+#+END_SRC
+
+Enable circadian to change theme based on time
+
+#+BEGIN_SRC emacs-lisp
+(use-package circadian
+  :config
+  (setq circadian-themes '(("6:00" . gruvbox-light-medium)
+                           ("23:00" . gruvbox-dark-meduim)))
+  (circadian-setup))
+#+END_SRC
+
+* Mail
+
+#+BEGIN_SRC emacs-lisp
+
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e/")
+(require 'mu4e)
+
+(setq mu4e-maildir (expand-file-name "~/.mail"))
+
+; get mail
+(setq mu4e-get-mail-command "mbsync -a"
+  mu4e-html2text-command "w3m -dump -T text/html"
+  ; mu4e-view-prefer-html t
+  mu4e-update-interval 300
+  mu4e-headers-auto-update t
+  mu4e-compose-signature-auto-include nil
+  mu4e-compose-format-flowed t)
+
+;; to view selected message in the browser, no signin, just html mail
+(add-to-list 'mu4e-view-actions
+  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+;; enable inline images
+;; (setq mu4e-view-show-images t)
+;; use imagemagick, if available
+;; (when (fboundp 'imagemagick-register-types)
+;;  (imagemagick-register-types))
+
+;; every new email composition gets its own frame!
+(setq mu4e-compose-in-new-frame t)
+
+;; don't save message to Sent Messages, IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
+(add-hook 'mu4e-view-mode-hook #'visual-line-mode)
+
+;; <tab> to navigate to links, <RET> to open them in browser
+(add-hook 'mu4e-view-mode-hook
+(lambda()
+;; try to emulate some of the eww key-bindings
+(local-set-key (kbd "<RET>") 'mu4e~view-browse-url-from-binding)
+(local-set-key (kbd "<tab>") 'shr-next-link)
+(local-set-key (kbd "<backtab>") 'shr-previous-link)))
+
+;; from https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/elgoumx
+(add-hook 'mu4e-headers-mode-hook
+      (defun my/mu4e-change-headers ()
+    (interactive)
+    (setq mu4e-headers-fields
+          `((:human-date . 25) ;; alternatively, use :date
+        (:flags . 6)
+        (:from . 22)
+        (:thread-subject . ,(- (window-body-width) 70)) ;; alternatively, use :subject
+        (:size . 7)))))
+
+;; if you use date instead of human-date in the above, use this setting
+;; give me ISO(ish) format date-time stamps in the header list
+;(setq mu4e-headers-date-format "%Y-%m-%d %H:%M")
+
+;; spell check
+(add-hook 'mu4e-compose-mode-hook
+   (defun my-do-compose-stuff ()
+    "My settings for message composition."
+    (visual-line-mode)))
+
+(require 'smtpmail)
+
+;;rename files when moving
+;;NEEDED FOR MBSYNC
+(setq mu4e-change-filenames-when-moving t)
+
+;;set up queue for offline email
+;;use mu mkdir  ~/Maildir/acc/queue to set up first
+(setq smtpmail-queue-mail nil)  ;; start in normal mode
+
+;;from the info manual
+(setq mu4e-attachment-dir  "/tmp")
+
+(setq message-kill-buffer-on-exit t)
+(setq mu4e-compose-dont-reply-to-self t)
+
+;; (require 'org-mu4e)
+
+;; convert org mode to HTML automatically
+;; (setq org-mu4e-convert-to-html t)
+
+;;from vxlabs config
+;; show full addresses in view message (instead of just names)
+;; toggle per name with M-RET
+(setq mu4e-view-show-addresses 't)
+
+;; don't ask when quitting
+(setq mu4e-confirm-quit nil)
+#+END_SRC
+
+* Languages
+** Autocompletion
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package company)
+
+#+END_SRC
+
+** Web development
+
+#+BEGIN_SRC emacs-lisp
+(use-package web-mode)
+(use-package emmet-mode)
+(use-package rjsx-mode)
+#+END_SRC
+
+** Rust
+
+Add Rust mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package rust-mode)
+#+END_SRC
+
+Add cargo mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package cargo)
+
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+#+END_SRC
+
+** Elixir
+   
+#+BEGIN_SRC emacs-lisp
+(use-package elixir-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package alchemist)
+#+END_SRC
+
+** Scheme
+
+#+BEGIN_SRC emacs-lisp
+(defun my-pretty-lambda ()
+  "make some word or string show as pretty Unicode symbols"
+  (setq prettify-symbols-alist
+        '(
+          ("lambda" . 955) ; λ
+          )))
+
+(add-hook 'scheme-mode-hook 'my-pretty-lambda)
+(global-prettify-symbols-mode 1)
+
+
+(setq geiser-chicken-compile-geiser-p nil)
+(setq geiser-active-implementations '(chicken))
+(setq geiser-default-implementation 'chicken)
+(setq geiser-chicken-binary "chicken-csi")
+(use-package geiser)
+
+(use-package lispy)
+   
+  
+#+END_SRC
+
+** LaTex
+
+#+BEGIN_SRC emacs-lisp
+(use-package latex-preview-pane)
+(add-to-list 'load-path "~/.emacs.d/auctex")
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
+
+; (setq font-latex-fontify-script nil)
+; (setq font-latex-fontify-sectioning 'color)
+; ; modify Beamer as well
+; (custom-set-faces
+;  '(font-latex-slide-title-face ((t (:inherit font-lock-type-face)))))
+; (font-latex-update-sectioning-faces)
+#+END_SRC
+
+** Python
+
+#+BEGIN_SRC emacs-lisp
+  ;; (defun python-doc ()
+  ;;   (interactive)
+  ;;   (setq-local helm-dash-docsets '("Python 3")))
+
+  ;; (add-hook 'python-mode-hook 'python)
+#+END_SRC
+
+* Keybindings
+  
+#+BEGIN_SRC emacs-lisp
+(use-package general)
+
+(general-define-key
+  :prefix ","
+  :non-normal-prefix "C-SPC"
+  :states '(normal visual motion emacs)
+  :keymaps 'override
+  "qc" 'quick-calc
+  "f" 'projectile-find-file
+  "p" 'projectile-switch-project
+  "b" 'ido-switch-buffer
+  "j" 'avy-goto-char
+  "h" '(nil :wk "helm-dash")
+  "hh" 'helm-dash
+  "hp" 'helm-dash-at-point
+  "d"  '(nil :wk "deft")
+  "dd" '(deft :wk "deft")
+  "dD" '(zd-deft-new-search :wk "new search")
+  "dR" '(deft-refresh :wk "refresh")
+  "ds" '(zd-search-at-point :wk "search at point")
+  "dc" '(zd-search-current-id :wk "search current id")
+  "df" '(zd-follow-link :wk "follow link")
+  "dF" '(zd-avy-file-search-ace-window :wk "avy file other window")
+  "dl" '(zd-avy-link-search :wk "avy link search")
+  "dt" '(zd-avy-tag-search :wk "avy tag search")
+  "dT" '(zd-tag-buffer :wk "tag list")
+  "di" '(zd-find-file-id-insert :wk "insert id")
+  "dI" '(zd-find-file-full-title-insert :wk "insert full title")
+  "do" '(zd-find-file :wk "find file")
+  "dn" '(zd-new-file :wk "new file")
+  "dN" '(zd-new-file-and-link :wk "new file & link")
+  "dr" '(zd-file-rename :wk "rename"))
+  
+
+ (define-key evil-motion-state-map (kbd "RET") nil)
+
+#+END_SRC
+
+* org-mode
+
+#+BEGIN_SRC emacs-lisp
+(general-def "\C-cc" 'org-capture)
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(general-def "\C-cl" 'org-store-link)
+(general-def "\C-ca" 'org-agenda)
+(add-hook 'org-capture-mode-hook 'evil-insert-state)
+
+(setq org-capture-templates
+ '(("i" "Inbox" entry (file+headline "~/org/gtd.org" "Inbox")
+     "** TODO %i%?\n")
+   ("v" "Vocabulary")
+   ("ve" "English" item (file "~/org/vocabulary/english.org")
+      "- %i%?\n")
+   ("vf" "French" item (file+headline "~/org/vocabulary.org" "French")
+      "- %i%?\n")
+   ("vd" "Dutch" item (file+headline "~/org/vocabulary.org" "Dutch")
+      "- %i%?\n")
+     ))
+
+(setq org-return-follows-link t)
+
+
+
+  (add-to-list 'org-structure-template-alist
+   '("se" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist
+   '("sr" "#+BEGIN_SRC rust\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist
+   '("sp" "#+BEGIN_SRC python\n?\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist
+   '("sb" "#+BEGIN_SRC bash\n?\n#+END_SRC"))
+
+  (defun my-org-confirm-babel-evaluate (lang body)
+    (not (member lang '("scheme" "R"))))
+  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . nil)
+       (R . t)
+       (dot . t)
+       (scheme . t)))
+
+(setq org-agenda-custom-commands
+       `(("ii" "[i]nbox tagged unscheduled tasks" tags "+inbox-SCHEDULED={.+}/!+TODO|+STARTED|+WAITING")))
+
+(defun my/org-mode-hook ()
+  "Stop the org-level headers from increasing in height relative to the other text."
+  (dolist (face '(org-level-1
+                  org-level-2
+                  org-level-3
+                  org-level-4
+                  org-level-5))
+    (set-face-attribute face nil :weight 'semi-bold :height 1.0)))
+
+(add-hook 'org-mode-hook 'my/org-mode-hook)
+
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "vimb")
+
+(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+
+  
+(setq org-modules (quote (org-habit)))
+#+END_SRC
+
+* zettelkasten
+
+Sets up deft and avy
+
+#+BEGIN_SRC emacs-lisp
+(use-package deft
+:custom
+(deft-directory "~/org/zettelkasten")
+(deft-extensions '("org" "md" "txt")))
+
+
+(use-package avy)
+#+END_SRC
+
+Now, zetteldeft
+
+#+BEGIN_SRC emacs-lisp
+(use-package zetteldeft
+  :load-path "~/.emacs.d/zetteldeft/"
+  :after deft)
+#+END_SRC
+
+Make an org-mode link type for zettel links:
+
+#+BEGIN_SRC emacs-lisp
+(org-link-set-parameters
+   "zettel"
+   :follow (lambda (path)
+              (zd-search-filename (zd-lift-id path))))
+#+END_SRC
+
+* Packages
+** bbdb
+
+#+BEGIN_SRC emacs-lisp
+(use-package bbdb)
+(bbdb-initialize)
+#+END_SRC
+
+** ess
+
+#+BEGIN_SRC emacs-lisp
+(setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
+(require 'ess-site)
+
+#+END_SRC
+
+** yasnippet
+
+#+BEGIN_SRC emacs-lisp
+(use-package yasnippet)
+(use-package yasnippet-snippets)
+
+(add-hook 'rust-mode-hook #'yas-minor-mode)
+#+END_SRC
+
+** writing
+
+#+BEGIN_SRC emacs-lisp
+(use-package writeroom-mode)
+#+END_SRC
+
+** magit
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit)
+
+(setq backup-directory-alist
+   `(("." . ,(concat user-emacs-directory "backups"))))
+
+
+(global-set-key [f7] (lambda () (interactive) (find-file user-init-file)))
+
+#+END_SRC
+
+** helm-dash
+#+BEGIN_SRC emacs-lisp
+(use-package helm-dash)
+(setq helm-dash-docsets '("Rust" "Python_3"))
+#+END_SRC
+
+** pdf-tools 
+
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-tools
+  :config
+  (pdf-tools-install)
+  (add-hook 'pdf-view-mode-hook (internal-show-cursor nil nil))
+ )
+
+#+END_SRC
+
+** elfeed
+
+#+BEGIN_SRC emacs-lisp
+(use-package elfeed)
+#+END_SRC
+
