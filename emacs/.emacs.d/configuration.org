@@ -261,6 +261,13 @@ Enable circadian to change theme based on time
 
 #+BEGIN_SRC emacs-lisp
 (use-package web-mode)
+
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+)
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
 (use-package emmet-mode)
 (use-package rjsx-mode)
 #+END_SRC
@@ -391,6 +398,13 @@ Add cargo mode
 (general-def "\C-cl" 'org-store-link)
 (general-def "\C-ca" 'org-agenda)
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
+
+
+(setq org-latex-listings 'minted
+      org-latex-packages-alist '(("" "minted"))
+      org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
 (setq org-capture-templates
  '(("i" "Inbox" entry (file+headline "~/org/gtd.org" "Inbox")
@@ -548,5 +562,10 @@ Make an org-mode link type for zettel links:
 
 #+BEGIN_SRC emacs-lisp
 (use-package elfeed)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
+(add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
 #+END_SRC
 

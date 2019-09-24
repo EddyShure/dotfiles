@@ -45,7 +45,7 @@
  '(deft-extensions (quote ("org" "md" "txt")))
  '(org-agenda-files
    (quote
-    ("~/org/wallpen.org" "~/org/birthdays.org" "~/org/gtd.org" "~/uni/index.org")))
+    ("~/uni/canvas.org" "~/org/wallpen.org" "~/org/birthdays.org" "~/org/gtd.org" "~/uni/index.org")))
  '(package-selected-packages
    (quote
     (bbdb gruvbox-theme company lispy company-mode evil-surround evil use-package diminish)))
