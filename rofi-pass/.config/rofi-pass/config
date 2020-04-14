@@ -15,7 +15,8 @@ _rofi () {
 fix_layout=true
 
 layout_cmd () {
-  setxkbmap de neo
+  #setxkbmap de neo
+  setxbkmap de
 }
 
 # fields to be used

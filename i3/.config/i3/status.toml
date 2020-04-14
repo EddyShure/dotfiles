@@ -1,0 +1,23 @@
+theme = "solarized-dark"
+icons = "none"
+
+[[block]]
+block = "music"
+player = "mpd"
+max_width = 40
+
+[[block]]
+block = "memory"
+display_type = "memory"
+format_mem = "{Mup}%"
+format_swap = "{SUp}%"
+
+[[block]]
+block = "battery"
+interval = 10
+format = "{percentage}% {time}"
+
+[[block]]
+block = "time"
+interval = 60
+format = "%Y-%m-%d %R"

@@ -1,11 +1,11 @@
 * General settings
 ** Ensure that packages are there
 
- #+BEGIN_SRC emacs-lisp
- (require 'use-package-ensure)
- (setq use-package-always-ensure t)
- #+END_SRC
-
+#+BEGIN_SRC emacs-lisp
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+#+END_SRC
+ 
 ** Enable ido flex mode
 
 #+BEGIN_SRC emacs-lisp
@@ -38,14 +38,14 @@ Enable fuzzy finding
   (projectile-mode +1))
 #+END_SRC
 
-* =evil mode=
+* ~evil-mode~
   
 Enable evil mode
 
 #+BEGIN_SRC emacs-lisp
 (use-package evil :config (evil-mode 1))
 #+END_SRC
-
+ 
 Enable ~evil-surround~ and ~evil-commentary~
 
 #+BEGIN_SRC emacs-lisp
@@ -57,10 +57,10 @@ Enable ~evil-surround~ and ~evil-commentary~
 #+BEGIN_SRC emacs-lisp
 (use-package evil-commentary :config (evil-commentary-mode 1))
 #+END_SRC
-
+ 
 * Theme
 ** Fonts
-
+   
 Set font to Fira Code
   
 #+BEGIN_SRC emacs-lisp
@@ -137,20 +137,17 @@ Prettify the font
 
 ** Theme
 
-Use gruvbox as theme
+Use gruvbox as theme, also install ~base16~
 
 #+BEGIN_SRC emacs-lisp
-(use-package gruvbox-theme :config (load-theme 'gruvbox-dark-medium t))
+    (use-package base16-theme)
+    (use-package gruvbox-theme :config (load-theme 'gruvbox-light-medium t))
 #+END_SRC
 
-Enable circadian to change theme based on time
+** Line numbers
 
 #+BEGIN_SRC emacs-lisp
-(use-package circadian
-  :config
-  (setq circadian-themes '(("6:00" . gruvbox-light-medium)
-                           ("23:00" . gruvbox-dark-meduim)))
-  (circadian-setup))
+;; (use-package linum-relative :config (linum-on))
 #+END_SRC
 
 * Mail
@@ -249,27 +246,21 @@ Enable circadian to change theme based on time
 #+END_SRC
 
 * Languages
+
 ** Autocompletion
 
 #+BEGIN_SRC emacs-lisp
-
 (use-package company)
-
 #+END_SRC
 
 ** Web development
 
 #+BEGIN_SRC emacs-lisp
-(use-package web-mode)
-
-(defun my-web-mode-hook ()
-  "Hooks for Web mode."
-  (setq web-mode-markup-indent-offset 2)
-)
-(add-hook 'web-mode-hook  'my-web-mode-hook)
-
 (use-package emmet-mode)
-(use-package rjsx-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package restclient)
 #+END_SRC
 
 ** Rust
@@ -300,6 +291,8 @@ Add cargo mode
 
 ** Scheme
 
+Make the lambda pretty   
+
 #+BEGIN_SRC emacs-lisp
 (defun my-pretty-lambda ()
   "make some word or string show as pretty Unicode symbols"
@@ -310,33 +303,17 @@ Add cargo mode
 
 (add-hook 'scheme-mode-hook 'my-pretty-lambda)
 (global-prettify-symbols-mode 1)
+#+END_SRC
 
+Install and configure geiser
 
+#+BEGIN_SRC emacs-lisp
+(use-package geiser
+  :config
 (setq geiser-chicken-compile-geiser-p nil)
 (setq geiser-active-implementations '(chicken))
 (setq geiser-default-implementation 'chicken)
-(setq geiser-chicken-binary "chicken-csi")
-(use-package geiser)
-
-(use-package lispy)
-   
-  
-#+END_SRC
-
-** LaTex
-
-#+BEGIN_SRC emacs-lisp
-(use-package latex-preview-pane)
-(add-to-list 'load-path "~/.emacs.d/auctex")
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
-
-; (setq font-latex-fontify-script nil)
-; (setq font-latex-fontify-sectioning 'color)
-; ; modify Beamer as well
-; (custom-set-faces
-;  '(font-latex-slide-title-face ((t (:inherit font-lock-type-face)))))
-; (font-latex-update-sectioning-faces)
+(setq geiser-chicken-binary "chicken-csi"))
 #+END_SRC
 
 ** Python
@@ -346,7 +323,16 @@ Add cargo mode
   ;;   (interactive)
   ;;   (setq-local helm-dash-docsets '("Python 3")))
 
-  ;; (add-hook 'python-mode-hook 'python)
+  ;; (add-hook 'python-mode-hook 'python-doc)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package pyvenv)
+  ;; (use-package jupyter)
+  ;; (use-package ein)
+  
+(use-package blacken)
+
 #+END_SRC
 
 * Keybindings
@@ -366,31 +352,26 @@ Add cargo mode
   "j" 'avy-goto-char
   "h" '(nil :wk "helm-dash")
   "hh" 'helm-dash
-  "hp" 'helm-dash-at-point
-  "d"  '(nil :wk "deft")
-  "dd" '(deft :wk "deft")
-  "dD" '(zd-deft-new-search :wk "new search")
-  "dR" '(deft-refresh :wk "refresh")
-  "ds" '(zd-search-at-point :wk "search at point")
-  "dc" '(zd-search-current-id :wk "search current id")
-  "df" '(zd-follow-link :wk "follow link")
-  "dF" '(zd-avy-file-search-ace-window :wk "avy file other window")
-  "dl" '(zd-avy-link-search :wk "avy link search")
-  "dt" '(zd-avy-tag-search :wk "avy tag search")
-  "dT" '(zd-tag-buffer :wk "tag list")
-  "di" '(zd-find-file-id-insert :wk "insert id")
-  "dI" '(zd-find-file-full-title-insert :wk "insert full title")
-  "do" '(zd-find-file :wk "find file")
-  "dn" '(zd-new-file :wk "new file")
-  "dN" '(zd-new-file-and-link :wk "new file & link")
-  "dr" '(zd-file-rename :wk "rename"))
+  "hp" 'helm-dash-at-point)
   
 
  (define-key evil-motion-state-map (kbd "RET") nil)
-
 #+END_SRC
 
 * org-mode
+  
+Let's set our calendar values
+  
+#+BEGIN_SRC emacs-lisp
+(setq calendar-latitude 51.5606)
+(setq calendar-longitude 5.0919)
+(setq calendar-location-name "Tilburg, Netherlands")
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+(require 'org-habit)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
 (general-def "\C-cc" 'org-capture)
@@ -438,13 +419,13 @@ Add cargo mode
 
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((emacs-lisp . nil)
+     '((emacs-lisp . t)
        (R . t)
        (dot . t)
+       (python . t)
+       (shell . t)
        (scheme . t)))
 
-(setq org-agenda-custom-commands
-       `(("ii" "[i]nbox tagged unscheduled tasks" tags "+inbox-SCHEDULED={.+}/!+TODO|+STARTED|+WAITING")))
 
 (defun my/org-mode-hook ()
   "Stop the org-level headers from increasing in height relative to the other text."
@@ -458,7 +439,7 @@ Add cargo mode
 (add-hook 'org-mode-hook 'my/org-mode-hook)
 
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "vimb")
+      browse-url-generic-program "firefox")
 
 (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 
@@ -466,8 +447,49 @@ Add cargo mode
 (setq org-modules (quote (org-habit)))
 #+END_SRC
 
-* zettelkasten
+** Agenda views
 
+#+BEGIN_SRC emacs-lisp
+;; https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html 
+(defun org-agenda-skip-all-siblings-but-first ()
+  "Skip all but the first non-done entry."
+  (let (should-skip-entry)
+    (unless (org-current-is-todo)
+      (setq should-skip-entry t))
+    (save-excursion
+      (while (and (not should-skip-entry) (org-goto-sibling t))
+        (when (org-current-is-todo)
+          (setq should-skip-entry t))))
+    (when should-skip-entry
+      (or (outline-next-heading)
+          (goto-char (point-max))))))
+	  
+(defun org-current-is-todo ()
+  (string= "TODO" (org-get-todo-state)))
+
+ (setq org-agenda-custom-commands
+	'(("u" "university tasks"
+	   ((tags-todo "+CATEGORY={^uni.*}"
+	     ((org-agenda-overriding-header "University tasks")
+	     (org-agenda-prefix-format "%l")
+	     (org-tags-match-list-sublevels t)
+	     (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp))))))
+          ("n" "next actions"
+           ((tags-todo "+CATEGORY=projects"
+             ((org-agenda-overriding-header "Next actions")
+              (org-agenda-skip-function #'org-agenda-skip-all-siblings-but-first)))))))
+#+END_SRC
+
+** ox-hugo
+
+#+BEGIN_SRC emacs-lisp
+(use-package ox-hugo
+  :ensure t            ;Auto-install the package from Melpa (optional)
+  :after ox)
+#+END_SRC
+
+* zettelkasten
+  
 Sets up deft and avy
 
 #+BEGIN_SRC emacs-lisp
@@ -478,39 +500,70 @@ Sets up deft and avy
 
 
 (use-package avy)
+(use-package evil-easymotion :config
+(evilem-default-keybindings "SPC"))
 #+END_SRC
 
 Now, zetteldeft
 
 #+BEGIN_SRC emacs-lisp
-(use-package zetteldeft
-  :load-path "~/.emacs.d/zetteldeft/"
-  :after deft)
+  ;; (use-package zetteldeft
+  ;;   :load-path "~/.emacs.d/zetteldeft/"
+  ;;   :after deft)
+#+END_SRC
+
+Set up ~zetteldeft~ keybindings
+
+#+BEGIN_SRC emacs-lisp
+  ;; (general-define-key
+  ;;   :prefix ","
+  ;;   :non-normal-prefix "C-SPC"
+  ;;   :states '(normal visual motion emacs)
+  ;;   :keymaps 'override
+  ;;   "d"  '(nil :wk "deft")
+  ;;   "dd" '(deft :wk "deft")
+  ;;   "dD" '(zetteldeft-deft-new-search :wk "new search")
+  ;;   "dR" '(deft-refresh :wk "refresh")
+  ;;   "ds" '(zetteldeft-search-at-point :wk "search at point")
+  ;;   "dc" '(zetteldeft-search-current-id :wk "search current id")
+  ;;   "df" '(zetteldeft-follow-link :wk "follow link")
+  ;;   "dF" '(zetteldeft-avy-file-search-ace-window :wk "avy file other window")
+  ;;   "dl" '(zetteldeft-avy-link-search :wk "avy link search")
+  ;;   "dt" '(zetteldeft-avy-tag-search :wk "avy tag search")
+  ;;   "dT" '(zetteldeft-tag-buffer :wk "tag list")
+  ;;   "di" '(zetteldeft-find-file-id-insert :wk "insert id")
+  ;;   "dI" '(zetteldeft-find-file-full-title-insert :wk "insert full title")
+  ;;   "do" '(zetteldeft-find-file :wk "find file")
+  ;;   "dn" '(zetteldeft-new-file :wk "new file")
+  ;;   "dN" '(zetteldeft-new-file-and-link :wk "new file & link")
+  ;;   "dr" '(zetteldeft-file-rename :wk "rename")
+  ;;   "dx" '(zetteldeft-count-words :wk "count words"))
 #+END_SRC
 
 Make an org-mode link type for zettel links:
 
 #+BEGIN_SRC emacs-lisp
-(org-link-set-parameters
-   "zettel"
-   :follow (lambda (path)
-              (zd-search-filename (zd-lift-id path))))
+  ;; (org-link-set-parameters
+  ;;    "zettel"
+  ;;    :follow (lambda (path)
+  ;;               (zd-search-filename (zd-lift-id path))))
 #+END_SRC
 
 * Packages
+
+** buien
+
+#+BEGIN_SRC emacs-lisp
+  ;; (load-file "~/.emacs.d/buien.el")
+#+END_SRC
+
 ** bbdb
 
 #+BEGIN_SRC emacs-lisp
-(use-package bbdb)
-(bbdb-initialize)
-#+END_SRC
-
-** ess
-
-#+BEGIN_SRC emacs-lisp
-(setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
-(require 'ess-site)
-
+(use-package bbdb :config
+(bbdb-initialize 'anniv)
+(setq bbdb-north-american-phone-numbers-p nil)
+(setq calendar-date-style "european"))
 #+END_SRC
 
 ** yasnippet
@@ -537,14 +590,14 @@ Make an org-mode link type for zettel links:
    `(("." . ,(concat user-emacs-directory "backups"))))
 
 
-(global-set-key [f7] (lambda () (interactive) (find-file user-init-file)))
-
+;; (global-set-key [f7] (lambda () (interactive) (find-file user-init-file)))
 #+END_SRC
 
 ** helm-dash
 #+BEGIN_SRC emacs-lisp
 (use-package helm-dash)
-(setq helm-dash-docsets '("Rust" "Python_3"))
+
+(setq helm-dash-common-docsets '("Rust"))
 #+END_SRC
 
 ** pdf-tools 
@@ -553,10 +606,25 @@ Make an org-mode link type for zettel links:
 (use-package pdf-tools
   :config
   (pdf-tools-install)
-  (add-hook 'pdf-view-mode-hook (internal-show-cursor nil nil))
- )
-
+  (add-hook 'pdf-view-mode-hook (internal-show-cursor nil nil)))
 #+END_SRC
+
+** helm-bibtex
+   
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-bibtex)
+ 
+(setq bibtex-completion-bibliography '("~/org/refs/books.bib"))
+;; (setq bibtex-completion-library-path '("~/papers/refs/pdfs"))
+(setq bibtex-completion-notes-path "~/org/refs/notes")
+(setq bibtex-completion-pdf-field "file")
+
+(setq bibtex-completion-additional-search-fields '(tags location))
+(setq bibtex-completion-display-formats 
+  '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7} ${tags:20} ${location:10}")))
+#+END_SRC
+
 
 ** elfeed
 
@@ -569,3 +637,19 @@ Make an org-mode link type for zettel links:
 (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
 #+END_SRC
 
+** ledger-mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package ledger-mode)
+#+END_SRC
+
+** mpd.el
+
+#+BEGIN_SRC emacs-lisp
+(use-package mpdel :config 
+  (mpdel-mode))
+  
+(use-package ivy-mpdel)
+
+(add-to-list 'evil-emacs-state-modes 'mpdel-tablist-mode)
+#+END_SRC
