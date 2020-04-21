@@ -43,7 +43,9 @@
    (quote
     ("aded61687237d1dff6325edb492bde536f40b048eab7246c61d5c6643c696b7f" default)))
  '(org-agenda-files (quote ("~/org/wallpen.org" "~/org/gtd.org")))
- '(package-selected-packages (quote (evil use-package diminish))))
+ '(package-selected-packages
+   (quote
+    (request-deferred request evil use-package diminish))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
