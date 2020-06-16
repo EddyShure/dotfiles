@@ -12,6 +12,15 @@
 (setq ido-enable-flex-matching t)
 #+END_SRC
 
+** Utility functions for machine-dependent setup
+
+Shoutout to Karl Voit: https://karl-voit.at/2017/02/11/my-system-is-foobar/
+
+#+begin_src emacs-lisp
+(defun machine-is-kepler () (string-equal system-name "kepler"))
+(defun machine-is-stokes () (string-equal system-name "stokes"))
+#+end_src
+
 * HELM
 
 
@@ -231,7 +240,7 @@ Use gruvbox as theme, also install ~base16~
 (setq message-kill-buffer-on-exit t)
 (setq mu4e-compose-dont-reply-to-self t)
 
-;; (require 'org-mu4e)
+(require 'org-mu4e)
 
 ;; convert org mode to HTML automatically
 ;; (setq org-mu4e-convert-to-html t)
@@ -245,8 +254,37 @@ Use gruvbox as theme, also install ~base16~
 (setq mu4e-confirm-quit nil)
 #+END_SRC
 
+Loads the ~mu4e~ contexts on machine ~kepler~:
+
+#+begin_src emacs-lisp
+(when (machine-is-kepler) (load "~/dotfiles/private/emacs/mu4e-contexts.el"))
+#+end_src
+
 * Languages
 
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :ensure t)
+(use-package lsp-mode
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (rust-mode . lsp)))
+
+(setq lsp-rust-server 'rust-analyzer)
+#+END_SRC
+  
+** YAML
+
+#+begin_src emacs-lisp
+(use-package yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+#+end_src
+
+** Haskell
+
+   #+begin_src emacs-lisp
+(use-package haskell-mode)
+
+   #+end_src
 ** Autocompletion
 
 #+BEGIN_SRC emacs-lisp
@@ -335,6 +373,12 @@ Install and configure geiser
 
 #+END_SRC
 
+** R
+
+#+BEGIN_SRC emacs-lisp
+; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
+; (require 'ess-site)
+#+END_SRC
 * Keybindings
   
 #+BEGIN_SRC emacs-lisp
@@ -401,16 +445,17 @@ Let's set our calendar values
 
 (setq org-return-follows-link t)
 
+(require 'org-tempo)
 
 
   (add-to-list 'org-structure-template-alist
-   '("se" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+   '("se" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist
-   '("sr" "#+BEGIN_SRC rust\n?\n#+END_SRC"))
+   '("sr" . "src rust"))
   (add-to-list 'org-structure-template-alist
-   '("sp" "#+BEGIN_SRC python\n?\n#+END_SRC"))
+   '("sp" . "src python"))
   (add-to-list 'org-structure-template-alist
-   '("sb" "#+BEGIN_SRC bash\n?\n#+END_SRC"))
+   '("sb" . "src bash"))
 
   (defun my-org-confirm-babel-evaluate (lang body)
     (not (member lang '("scheme" "R"))))
@@ -422,6 +467,7 @@ Let's set our calendar values
      '((emacs-lisp . t)
        (R . t)
        (dot . t)
+       (haskell . t)
        (python . t)
        (shell . t)
        (scheme . t)))
@@ -551,6 +597,13 @@ Make an org-mode link type for zettel links:
 
 * Packages
 
+** direnv
+
+#+begin_src emacs-lisp
+(use-package direnv
+  :config (direnv-mode))
+#+end_src
+
 ** buien
 
 #+BEGIN_SRC emacs-lisp
@@ -625,7 +678,6 @@ Make an org-mode link type for zettel links:
   '((t . "${author:36} ${title:*} ${year:4} ${=has-pdf=:1}${=has-note=:1} ${=type=:7} ${tags:20} ${location:10}")))
 #+END_SRC
 
-
 ** elfeed
 
 #+BEGIN_SRC emacs-lisp
@@ -637,6 +689,12 @@ Make an org-mode link type for zettel links:
 (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
 #+END_SRC
 
+Loads the RSS config on machine ~kepler~:
+
+#+begin_src emacs-lisp
+(when (machine-is-kepler) (load "~/dotfiles/private/emacs/rss-feeds.el"))
+#+end_src
+
 ** ledger-mode
 
 #+BEGIN_SRC emacs-lisp
@@ -644,7 +702,7 @@ Make an org-mode link type for zettel links:
 #+END_SRC
 
 ** mpd.el
-
+   
 #+BEGIN_SRC emacs-lisp
 (use-package mpdel :config 
   (mpdel-mode))
@@ -653,3 +711,12 @@ Make an org-mode link type for zettel links:
 
 (add-to-list 'evil-emacs-state-modes 'mpdel-tablist-mode)
 #+END_SRC
+
+** docker
+
+#+begin_src emacs-lisp
+(use-package docker
+  :ensure t
+  :bind ("C-c d" . docker))
+#+end_src
+

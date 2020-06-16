@@ -10,12 +10,15 @@
 ;; Sets up package
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
 
 ;; Installs use-package, if not already installed
 (unless (or (package-installed-p 'use-package)
+	    (package-installed-p 'org)
             (package-installed-p 'diminish))
   (package-refresh-contents)
+  (package-install 'org)
   (package-install 'use-package)
   (package-install 'diminish))
 
@@ -29,11 +32,6 @@
 (org-babel-load-file 
   (expand-file-name (concat user-emacs-directory "configuration.org")))
 
-;; Loads private configuration files
-(org-babel-load-file
- (expand-file-name "~/dotfiles/private/emacs/mu4e-contexts.org"))
-(org-babel-load-file
- (expand-file-name "~/dotfiles/private/emacs/rss-feeds.org"))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -45,7 +43,7 @@
  '(org-agenda-files (quote ("~/org/wallpen.org" "~/org/gtd.org")))
  '(package-selected-packages
    (quote
-    (request-deferred request evil use-package diminish))))
+    (org request-deferred request evil use-package diminish))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
