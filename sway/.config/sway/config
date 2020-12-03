@@ -115,14 +115,11 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
 bar {
   font pango:Fira Mono for Powerline Bold 10
   mode hide
   hidden_state hide
-  # position top
-  status_command i3bar
+  status_command while date -Iminutes; do sleep 1; done
   
   colors {
     separator #928374
@@ -148,7 +145,7 @@ bindsym $mod+F2 exec "mpc next"
 bindsym $mod+F3 exec "mpc prev"
 
 # Screenshot shortcut
-bindsym --release Print exec "scrot -s -f -e 'xclip $f -selection clipboard -t image/png' '/tmp/%Y-%m-%d_$wx$h.png'"
+bindsym --release Print exec "grim -g (slurp) | wl-copy"
 
 # Adjusts borders
 default_border pixel 1
@@ -175,3 +172,6 @@ bindswitch --reload --locked lid:off output $laptop enable
 
 # Hides cursor on mouse inactivity
 seat * hide_cursor 5000
+
+# Sets up wallpaper
+output * bg ~/dotfiles/wallpaper/background_ibm360.png stretch
